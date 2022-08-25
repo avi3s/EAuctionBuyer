@@ -20,7 +20,6 @@ public class ProductEntity {
 	private String productCategoryId;
 	private String productCategoryName;
 	private String sellerId;
-	//private List<BidEntity> bidEntities;
     private String productName;
     private String shortDescription;
     private String detailedDescription;
