@@ -43,9 +43,6 @@ public class BidServiceImpl implements AddBidService, UpdateBidService {
 	@Lazy
 	private ModelMapper modelMapper;
 	
-	@Value("${datetime.format}")
-	private String datetimeFormat;
-	
 	@Value("${less.bid.amount}")
 	private String lessBidAmount;
 	
