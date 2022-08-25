@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Mono;
 
-public interface LoginService {
+public interface UpdateBidService {
 
-	Mono<ServerResponse> login(ServerRequest serverRequest);
+	Mono<ServerResponse> updateBid(ServerRequest serverRequest);
 }

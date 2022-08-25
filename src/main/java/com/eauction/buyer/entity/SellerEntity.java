@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "buyer_details")
-public class BuyerEntity {
+@Document(collection = "seller_details")
+public class SellerEntity {
 
 	@Id
-    private String buyerId;
+    private String sellerId;
     private String emailId;
     private String password;
     private String firstName;
