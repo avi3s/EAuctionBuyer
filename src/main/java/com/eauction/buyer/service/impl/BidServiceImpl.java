@@ -98,7 +98,7 @@ public class BidServiceImpl implements AddBidService, UpdateBidService {
 	                   .collect(Collectors.joining(", "));
 	           throw new BidException(errorMessage);
 	       } else {
-	    	   util.printLog(bidModel, "Incoming Request");
+	    	   util.printLog(bidModel, "Add Bid Incoming Request");
 	    	   bidRepository.findByProductIdAndBuyerId(bidModel.getProductId(), bidModel.getBuyerId()).doOnNext(bid ->  {
 	    		   if(Objects.nonNull(bid)) {
 	    			   throw new BidException(duplicateBid);

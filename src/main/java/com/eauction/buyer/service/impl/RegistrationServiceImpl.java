@@ -92,7 +92,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                    .collect(Collectors.joining(", "));
            throw new RegistrationException(errorMessage);
        } else {
-    	   util.printLog(buyerModel, "Incoming Request");
+    	   util.printLog(buyerModel, "Buyer Registration Incoming Request");
        }
 	}
 	

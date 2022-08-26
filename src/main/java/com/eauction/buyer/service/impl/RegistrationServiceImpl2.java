@@ -23,7 +23,6 @@ import com.eauction.buyer.repository.BuyerRepository;
 import com.eauction.buyer.service.RegistrationService;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class RegistrationServiceImpl2 implements RegistrationService {
@@ -73,7 +72,7 @@ public class RegistrationServiceImpl2 implements RegistrationService {
                    .collect(Collectors.joining(", "));
            throw new RegistrationException(errorMessage);
        } else {
-    	   util.printLog(buyerModel, "Incoming Request");
+    	   util.printLog(buyerModel, "Buyer Registration Incoming Request");
        }
 	}
 	

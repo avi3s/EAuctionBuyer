@@ -63,7 +63,7 @@ public class LoginServiceImpl implements LoginService {
 	                   .collect(Collectors.joining(", "));
 	           throw new LoginException(errorMessage);
 	       } else {
-	    	   util.printLog(loginModel, "Incoming Request");
+	    	   util.printLog(loginModel, "Login Incoming Request");
 	       }
 	}
 	
