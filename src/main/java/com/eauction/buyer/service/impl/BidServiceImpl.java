@@ -49,6 +49,9 @@ public class BidServiceImpl implements AddBidService, UpdateBidService {
 	@Value("${no.bid.amount}")
 	private String noBidAmount;
 	
+	@Value("${duplicate.bid}")
+	private String duplicateBid;
+	
 	@Override
 	public Mono<ServerResponse> addBid(ServerRequest serverRequest) {
 		return serverRequest.bodyToMono(BidModel.class)
@@ -69,15 +72,15 @@ public class BidServiceImpl implements AddBidService, UpdateBidService {
 					            	   throw new BidException(noBidAmount);
 					               } else {
 					            	   if (Objects.nonNull(eb.get(0).getBidAmount()) &&  eb.get(0).getBidAmount() < Double.valueOf(newBidAmount)) {
-					       				BidEntity bidEntity = new BidEntity();
-					       				bidEntity.setBidAmount(Double.valueOf(newBidAmount));
-					       				bidEntity.setBidDateTime(LocalDateTime.now());
-					       				bidEntity.setBuyerId(util.getUserIdFromToken(serverRequest.headers().firstHeader("Authorization")));
-					       				bidEntity.setProductId(productId);
-					       				return Mono.just(bidEntity);
-					       			} else {
-					       				throw new BidException(lessBidAmount);
-					       			}
+						       				BidEntity bidEntity = new BidEntity();
+						       				bidEntity.setBidAmount(Double.valueOf(newBidAmount));
+						       				bidEntity.setBidDateTime(LocalDateTime.now());
+						       				bidEntity.setBuyerId(util.getUserIdFromToken(serverRequest.headers().firstHeader("Authorization")));
+						       				bidEntity.setProductId(productId);
+						       				return Mono.just(bidEntity);
+						       			} else {
+						       				throw new BidException(lessBidAmount);
+						       			}
 					               }
 					           })
 						   .flatMap(bidRepository::save)
@@ -94,6 +97,13 @@ public class BidServiceImpl implements AddBidService, UpdateBidService {
 	                   .sorted()
 	                   .collect(Collectors.joining(", "));
 	           throw new BidException(errorMessage);
+	       } else {
+	    	   util.printLog(bidModel, "Incoming Request");
+	    	   bidRepository.findByProductIdAndBuyerId(bidModel.getProductId(), bidModel.getBuyerId()).doOnNext(bid ->  {
+	    		   if(Objects.nonNull(bid)) {
+	    			   throw new BidException(duplicateBid);
+	    		   }
+	    	   });
 	       }
 	}
 	
