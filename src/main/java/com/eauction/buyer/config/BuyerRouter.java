@@ -46,7 +46,7 @@ public class BuyerRouter implements WebFluxConfigurer {
                		 	  @ApiResponse(responseCode = "400", description = "Invalid Request", content = @Content(schema = @Schema(implementation = String.class)))},
                  requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = LoginModel.class))))),
 	 })
-     public RouterFunction<ServerResponse> loginRoute(RegistrationService registrationService) {
+     public RouterFunction<ServerResponse> registrationRoute(RegistrationService registrationService) {
         return route()
                .nest(path("/api/v1/buyer/registration"), builder ->
                        builder

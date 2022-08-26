@@ -69,12 +69,6 @@ public class LoginServiceImpl implements LoginService {
 	
 	private Mono<BuyerModel> transform(Mono<BuyerEntity> from, Class<BuyerModel> valueType) {
 
-		BuyerModel buyerModelTest = new BuyerModel();// Delete this line once DB contains value
-		buyerModelTest.setEmailId("avirup.pal@gmail.com");// Delete this line once DB contains value
-		buyerModelTest.setFirstName("Avirup");// Delete this line once DB contains value
-		buyerModelTest.setLastName("Pal");// Delete this line once DB contains value
-		buyerModelTest.setBuyerId("1");// Delete this line once DB contains value
-		buyerModelTest.setJwt(util.createJwt(buyerModelTest));// Delete this line once DB contains value
 		return from.flatMap(be -> {
 								util.printLog(be, "Coming From Database");
 								if (Objects.nonNull(be)) {
@@ -84,7 +78,6 @@ public class LoginServiceImpl implements LoginService {
 								} else {
 									return null;
 								}
-							})
-					.switchIfEmpty(Mono.just(buyerModelTest));// Delete this line once DB contains value
+							});
 	}
 }

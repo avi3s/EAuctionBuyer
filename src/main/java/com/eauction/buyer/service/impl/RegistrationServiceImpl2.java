@@ -24,8 +24,8 @@ import com.eauction.buyer.service.RegistrationService;
 
 import reactor.core.publisher.Mono;
 
-//@Service
-public class RegistrationServiceImpl implements RegistrationService {
+@Service
+public class RegistrationServiceImpl2 implements RegistrationService {
 
 	@Autowired
 	private Validator validator;
@@ -45,32 +45,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 	
 	@Override
 	public Mono<ServerResponse> registerBuyer(ServerRequest serverRequest) {
-		
-		Mono<BuyerModel> buyerModel = serverRequest.bodyToMono(BuyerModel.class);
-		buyerModel.doOnNext(this::validate)
-		
-		
-				  .flatMap(buyer -> {
-					  buyerRepository.findBuyerByEmailId(buyer.getEmailId())
-							  				.flatMap(bm ->  {
-												  if(Objects.nonNull(bm)) {
-										  			   throw new RegistrationException(duplicateUser);
-										  		   } else {
-										  			   return null;
-										  		   } 
-											  });
-					  return null;
-//							  				.flatMap(buyerRepository::save)
-//							  				.flatMap(buyerEntity -> ServerResponse.status(HttpStatus.CREATED).bodyValue(buyerEntity));
-										  });
-		
-		return buyerModel.flatMap(b -> buyerRepository.save(transform(b, BuyerEntity.class)))
-				  .flatMap(buyerEntity -> ServerResponse.status(HttpStatus.CREATED).bodyValue(buyerEntity));
+		return serverRequest.bodyToMono(BuyerModel.class)
+                .doOnNext(this::validate)
+                .doOnNext(this::validateAlreadyPresent)
+                .flatMap(bidModel -> buyerRepository.save(transform(bidModel, BuyerEntity.class)))
+                .flatMap(buyerEntity -> ServerResponse.status(HttpStatus.CREATED).bodyValue(buyerEntity));
 	}
-	
-	private Mono<ServerResponse> registerBuyerResponse(Mono<BuyerEntity> buyerEntity) {
-        return ServerResponse.status(HttpStatus.CREATED).bodyValue(buyerEntity);
-    }
 	
 	private BuyerEntity transform(BuyerModel buyerModel, Class<BuyerEntity> valueType) {
 		
