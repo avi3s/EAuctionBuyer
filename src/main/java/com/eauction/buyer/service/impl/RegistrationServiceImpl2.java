@@ -23,6 +23,7 @@ import com.eauction.buyer.repository.BuyerRepository;
 import com.eauction.buyer.service.RegistrationService;
 
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class RegistrationServiceImpl2 implements RegistrationService {
@@ -47,8 +48,8 @@ public class RegistrationServiceImpl2 implements RegistrationService {
 	public Mono<ServerResponse> registerBuyer(ServerRequest serverRequest) {
 		return serverRequest.bodyToMono(BuyerModel.class)
                 .doOnNext(this::validate)
-                .doOnNext(this::validateAlreadyPresent)
-                .flatMap(bidModel -> buyerRepository.save(transform(bidModel, BuyerEntity.class)))
+                .doOnSuccess(this::validateAlreadyPresent)
+                .flatMap(buyerModel -> buyerRepository.save(transform(buyerModel, BuyerEntity.class)))
                 .flatMap(buyerEntity -> ServerResponse.status(HttpStatus.CREATED).bodyValue(buyerEntity));
 	}
 	
@@ -84,6 +85,7 @@ public class RegistrationServiceImpl2 implements RegistrationService {
   		   } else {
   			   return Mono.just(buyerModel);
   		   }
-  	   });
+  	   })
+  	   .switchIfEmpty(null);
 	}
 }
