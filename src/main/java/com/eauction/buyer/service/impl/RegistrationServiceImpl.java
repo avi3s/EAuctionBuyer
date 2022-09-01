@@ -51,7 +51,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		
 		
 				  .flatMap(buyer -> {
-					  buyerRepository.findBuyerByEmailId(buyer.getEmailId())
+					  buyerRepository.findByEmailId(buyer.getEmailId())
 							  				.flatMap(bm ->  {
 												  if(Objects.nonNull(bm)) {
 										  			   throw new RegistrationException(duplicateUser);
@@ -97,7 +97,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 	
 	private void validateAlreadyPresent(BuyerModel buyerModel) {
-	   var buyer = buyerRepository.findBuyerByEmailId(buyerModel.getEmailId());
+	   var buyer = buyerRepository.findByEmailId(buyerModel.getEmailId());
   	   buyer.flatMap(bm ->  {
   		   if(Objects.nonNull(bm)) {
   			   throw new RegistrationException(duplicateUser);

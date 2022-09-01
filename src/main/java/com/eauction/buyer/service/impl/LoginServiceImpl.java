@@ -72,7 +72,7 @@ public class LoginServiceImpl implements LoginService {
 		return from.flatMap(be -> {
 								util.printLog(be, "Coming From Database");
 								if (Objects.nonNull(be)) {
-									BuyerModel buyerModel = modelMapper.map(from, valueType);
+									BuyerModel buyerModel = modelMapper.map(be, valueType);
 									buyerModel.setJwt(util.createJwt(buyerModel));
 									return Mono.just(buyerModel);
 								} else {

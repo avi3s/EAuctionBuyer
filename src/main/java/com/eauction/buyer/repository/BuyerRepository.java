@@ -10,5 +10,5 @@ public interface BuyerRepository extends ReactiveMongoRepository<BuyerEntity, St
 
 	Mono<BuyerEntity> findBuyerByEmailIdAndPassword(String emailId, String password);
 	
-	Mono<BuyerEntity> findBuyerByEmailId(String emailId);
+	Mono<BuyerEntity> findByEmailId(String emailId);
 }

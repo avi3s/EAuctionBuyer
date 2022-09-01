@@ -45,11 +45,22 @@ public class RegistrationServiceImpl2 implements RegistrationService {
 	
 	@Override
 	public Mono<ServerResponse> registerBuyer(ServerRequest serverRequest) {
+		registerBuyer1(serverRequest);
+		return null;
+//		return serverRequest.bodyToMono(BuyerModel.class)
+//                .doOnNext(serverRequest::registerBuyer1)
+//                //.doOnSuccess(this::validateAlreadyPresent)
+//                .flatMap(buyerModel -> buyerRepository.findByEmailId(buyerModel.getEmailId()))
+//                .doOnNext(be -> throwException(be));
+//                .flatMap(be -> buyerRepository.save(be))
+//                .flatMap(buyerEntity -> ServerResponse.status(HttpStatus.CREATED).bodyValue(buyerEntity));
+	}
+	
+	public Mono<BuyerEntity> registerBuyer1(ServerRequest serverRequest) {
 		return serverRequest.bodyToMono(BuyerModel.class)
                 .doOnNext(this::validate)
-                .doOnSuccess(this::validateAlreadyPresent)
-                .flatMap(buyerModel -> buyerRepository.save(transform(buyerModel, BuyerEntity.class)))
-                .flatMap(buyerEntity -> ServerResponse.status(HttpStatus.CREATED).bodyValue(buyerEntity));
+                .flatMap(buyerModel -> buyerRepository.findByEmailId(buyerModel.getEmailId()))
+                .doOnNext(be -> throwException(be));
 	}
 	
 	private BuyerEntity transform(BuyerModel buyerModel, Class<BuyerEntity> valueType) {
@@ -60,6 +71,10 @@ public class RegistrationServiceImpl2 implements RegistrationService {
 		} else {
 			return null;
 		}
+	}
+	
+	private void throwException(BuyerEntity buyerEntity) {
+	    throw new RegistrationException(duplicateUser);
 	}
 
 	private void validate(BuyerModel buyerModel) {
@@ -73,18 +88,19 @@ public class RegistrationServiceImpl2 implements RegistrationService {
            throw new RegistrationException(errorMessage);
        } else {
     	   util.printLog(buyerModel, "Buyer Registration Incoming Request");
+    	   //validateAlreadyPresent(buyerModel);
        }
 	}
 	
 	private void validateAlreadyPresent(BuyerModel buyerModel) {
-	   var buyer = buyerRepository.findBuyerByEmailId(buyerModel.getEmailId());
-  	   buyer.flatMap(bm ->  {
+	   var buyer = buyerRepository.findByEmailId(buyerModel.getEmailId());
+	   
+	   buyer.flatMap(bm ->  {
   		   if(Objects.nonNull(bm)) {
   			   throw new RegistrationException(duplicateUser);
   		   } else {
   			   return Mono.just(buyerModel);
   		   }
-  	   })
-  	   .switchIfEmpty(null);
+  	   });
 	}
 }
